@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/carboot_sale.dart';
 import '../theme/app_theme.dart';
@@ -345,38 +346,39 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  void _shareEvent(BuildContext context) {
-    // In a real app, you would implement sharing functionality here
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Share functionality would be implemented here'),
-      ),
-    );
-  }
+void _shareEvent(BuildContext context) {
+  final String shareText = '''
+Check out this Car Boot Sale! 🚗🛍️
+
+${sale.name}
+📅 ${DateFormat('EEE, MMM d, yyyy').format(sale.date)}
+🕒 ${sale.openingTime} - ${sale.closingTime}
+📍 ${sale.address}
+
+Find more at: https://www.google.com/maps/dir/?api=1&destination=${Uri.encodeComponent(sale.address)}
+''';
+
+  Share.share(shareText, subject: 'Car Boot Sale: ${sale.name}');
+}
+
 
   void _getDirections(BuildContext context) async {
-    final Uri googleMapsUri = Uri.parse(
-      'https://www.google.com/maps/dir/?api=1&destination=${Uri.encodeComponent(sale.address)}',
-    );
-    final Uri appleMapsUri = Uri.parse(
-      'http://maps.apple.com/?daddr=${Uri.encodeComponent(sale.address)}',
-    );
+  final Uri googleMapsUri = Uri.parse('geo:0,0?q=${Uri.encodeComponent(sale.address)}');
+  final Uri appleMapsUri = Uri.parse('http://maps.apple.com/?daddr=${Uri.encodeComponent(sale.address)}');
 
-    try {
-      // Try to launch Google Maps first, fallback to Apple Maps on iOS
-      if (Theme.of(context).platform == TargetPlatform.iOS) {
-        await _launchUrl(appleMapsUri, context);
-      } else {
-        await _launchUrl(googleMapsUri, context);
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not open maps: $e'),
-        ),
-      );
+  try {
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      await _launchUrl(appleMapsUri, context);
+    } else {
+      await _launchUrl(googleMapsUri, context);
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Could not open maps: $e')),
+    );
   }
+}
+
 
   Future<void> _launchUrl(Uri uri, BuildContext context) async {
     // You need to add url_launcher to your pubspec.yaml
