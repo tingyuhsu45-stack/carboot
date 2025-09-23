@@ -8,7 +8,7 @@ import '../theme/app_theme.dart';
 import 'detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       flex: 2,
                       child: DropdownButtonFormField<String>(
-                        value: _selectedArea,
+                        initialValue: _selectedArea,
                         decoration: const InputDecoration(
                           labelText: 'Area',
                           contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

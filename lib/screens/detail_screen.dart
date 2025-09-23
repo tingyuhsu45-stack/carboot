@@ -8,9 +8,9 @@ class DetailScreen extends StatelessWidget {
   final CarBootSale sale;
 
   const DetailScreen({
-    Key? key,
+    super.key,
     required this.sale,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

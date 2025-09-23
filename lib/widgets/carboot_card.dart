@@ -8,10 +8,10 @@ class CarBootCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const CarBootCard({
-    Key? key,
+    super.key,
     required this.sale,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
