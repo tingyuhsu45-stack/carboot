@@ -29,21 +29,19 @@ class DetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Image Placeholder (eco-themed gradient)
-            Container(
-              height: 200,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: AppTheme.ecoGradient,
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.storefront,
-                  size: 64,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            // Header Image
+            if (sale.imageUrl != null && sale.imageUrl!.isNotEmpty)
+              Image.network(
+                sale.imageUrl!,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return _buildHeaderPlaceholder();
+                },
+              )
+            else
+              _buildHeaderPlaceholder(),
 
             Padding(
               padding: const EdgeInsets.all(16),
@@ -52,6 +50,7 @@ class DetailScreen extends StatelessWidget {
                 children: [
                   // Title and Verified Badge
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
@@ -61,7 +60,8 @@ class DetailScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (sale.isVerified)
+                      if (sale.isVerified) ...[
+                        const SizedBox(width: 12),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
@@ -81,7 +81,7 @@ class DetailScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 6),
                               Text(
-                                'Verified Organiser',
+                                'Verified',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -91,6 +91,7 @@ class DetailScreen extends StatelessWidget {
                             ],
                           ),
                         ),
+                      ]
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -124,7 +125,7 @@ class DetailScreen extends StatelessWidget {
                       Expanded(
                         child: _InfoCard(
                           icon: Icons.calendar_today,
-                          title: 'Date',
+                          title: 'Next Date',
                           value: DateFormat('EEE, MMM d, yyyy').format(sale.date),
                         ),
                       ),
@@ -168,6 +169,33 @@ class DetailScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 24),
+
+                  // Upcoming Dates
+                  if (sale.upcomingDates != null && sale.upcomingDates!.isNotEmpty) ...[
+                    _SectionHeader(title: 'Upcoming Dates'),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppTheme.lightGrey,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppTheme.accentGreen.withOpacity(0.3)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: sale.upcomingDates!.map((date) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Text(
+                              '• ${DateFormat('EEEE, MMMM d, yyyy').format(date)}',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
 
                   // Location
                   _SectionHeader(title: 'Location'),
@@ -239,6 +267,31 @@ class DetailScreen extends StatelessWidget {
                         );
                       }).toList(),
                     ),
+                    const SizedBox(height: 24),
+                  ],
+
+                  // More Info Links
+                  if (sale.website != null || sale.phoneNumber != null || sale.socialMedia != null) ...[
+                    _SectionHeader(title: 'More Info'),
+                    const SizedBox(height: 8),
+                    if (sale.website != null)
+                      _InfoLinkTile(
+                        icon: Icons.language,
+                        text: 'Visit Website',
+                        onTap: () => _launchUrl(Uri.parse(sale.website!), context, launchMode: LaunchMode.platformDefault),
+                      ),
+                    if (sale.phoneNumber != null)
+                      _InfoLinkTile(
+                        icon: Icons.phone,
+                        text: 'Call Organiser',
+                        onTap: () => _launchUrl(Uri.parse('tel:${sale.phoneNumber!}'), context),
+                      ),
+                    if (sale.socialMedia != null)
+                      _InfoLinkTile(
+                        icon: Icons.group,
+                        text: 'Follow on Social Media',
+                        onTap: () => _launchUrl(Uri.parse(sale.socialMedia!), context),
+                      ),
                     const SizedBox(height: 24),
                   ],
 
@@ -346,8 +399,26 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-void _shareEvent(BuildContext context) {
-  final String shareText = '''
+  Widget _buildHeaderPlaceholder() {
+    return Container(
+      height: 200,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: AppTheme.ecoGradient,
+      ),
+      child: const Center(
+        child: Icon(
+          Icons.storefront,
+          size: 64,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  void _shareEvent(BuildContext context) {
+    final String mapUrl = 'https://www.google.com/maps/search/?api=1&query=${sale.latitude},${sale.longitude}';
+    final String shareText = '''
 Check out this Car Boot Sale! 🚗🛍️
 
 ${sale.name}
@@ -355,37 +426,33 @@ ${sale.name}
 🕒 ${sale.openingTime} - ${sale.closingTime}
 📍 ${sale.address}
 
-Find more at: https://www.google.com/maps/dir/?api=1&destination=${Uri.encodeComponent(sale.address)}
+Find it here: $mapUrl
 ''';
 
-  Share.share(shareText, subject: 'Car Boot Sale: ${sale.name}');
-}
-
+    Share.share(shareText, subject: 'Car Boot Sale: ${sale.name}');
+  }
 
   void _getDirections(BuildContext context) async {
-  final Uri googleMapsUri = Uri.parse('geo:0,0?q=${Uri.encodeComponent(sale.address)}');
-  final Uri appleMapsUri = Uri.parse('http://maps.apple.com/?daddr=${Uri.encodeComponent(sale.address)}');
+    final String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=${sale.latitude},${sale.longitude}';
+    final String appleMapsUrl = 'http://maps.apple.com/?ll=${sale.latitude},${sale.longitude}&q=${Uri.encodeComponent(sale.name)}';
 
-  try {
-    if (Theme.of(context).platform == TargetPlatform.iOS) {
-      await _launchUrl(appleMapsUri, context);
-    } else {
-      await _launchUrl(googleMapsUri, context);
+    try {
+      if (Theme.of(context).platform == TargetPlatform.iOS) {
+        await _launchUrl(Uri.parse(appleMapsUrl), context);
+      } else {
+        await _launchUrl(Uri.parse(googleMapsUrl), context);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not open maps: $e')),
+      );
     }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Could not open maps: $e')),
-    );
   }
-}
 
-
-  Future<void> _launchUrl(Uri uri, BuildContext context) async {
-    // You need to add url_launcher to your pubspec.yaml
-    // import 'package:url_launcher/url_launcher.dart';
+  Future<void> _launchUrl(Uri uri, BuildContext context, {LaunchMode launchMode = LaunchMode.externalApplication}) async {
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
+      await launchUrl(uri, mode: launchMode);
+    } else {  
       throw 'Could not launch $uri';
     }
   }
@@ -470,6 +537,53 @@ class _SectionHeader extends StatelessWidget {
       style: Theme.of(context).textTheme.titleLarge?.copyWith(
         fontWeight: FontWeight.bold,
         color: AppTheme.primaryGreen,
+      ),
+    );
+  }
+}
+
+class _InfoLinkTile extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final VoidCallback onTap;
+
+  const _InfoLinkTile({
+    required this.icon,
+    required this.text,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      elevation: 1,
+      shadowColor: AppTheme.accentGreen.withOpacity(0.2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppTheme.accentGreen.withOpacity(0.3)),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Icon(icon, color: AppTheme.primaryGreen),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  text,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: AppTheme.neutralGrey),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -25,6 +25,14 @@ class CarBootRepository {
         organiser: 'Bermondsey Square Events',
         contactEmail: 'info@bermondseysquare.com',
         isVerified: true,
+        imageUrl: 'https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        website: 'https://bermondseysquare.net/bermondsey-market/',
+        phoneNumber: '020 7407 8619',
+        upcomingDates: [
+          DateTime.now().add(const Duration(days: 2)),
+          DateTime.now().add(const Duration(days: 9)),
+          DateTime.now().add(const Duration(days: 16)),
+        ],
       ),
       CarBootSale(
         id: '2',
@@ -44,6 +52,13 @@ class CarBootRepository {
         organiser: 'Pimlico Community Group',
         contactEmail: 'hello@pimlicomarket.org',
         isVerified: true,
+        imageUrl: 'https://images.unsplash.com/photo-1567226475328-9d6baaf565cf?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        website: 'https://www.lfm.org.uk/markets/pimlico-road/',
+        upcomingDates: [
+          DateTime.now().add(const Duration(days: 1)),
+          DateTime.now().add(const Duration(days: 8)),
+          DateTime.now().add(const Duration(days: 15)),
+        ],
       ),
       CarBootSale(
         id: '3',
@@ -63,6 +78,9 @@ class CarBootRepository {
         organiser: 'Wimbledon Stadium Events',
         contactEmail: 'events@wimbledonstadium.co.uk',
         isVerified: true,
+        imageUrl: 'https://images.unsplash.com/photo-1515934751635-481eff105296?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        website: 'https://www.wimbledonstadium.com/car-boot-sale',
+        phoneNumber: '020 8946 8000',
       ),
       CarBootSale(
         id: '4',
@@ -82,6 +100,7 @@ class CarBootRepository {
         organiser: 'South London Car Boots',
         contactEmail: 'info@southlondoncarboots.com',
         isVerified: false,
+        imageUrl: 'https://images.unsplash.com/photo-1612189459332-11305b53a47f?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       ),
       CarBootSale(
         id: '5',
@@ -101,6 +120,7 @@ class CarBootRepository {
         organiser: 'Crystal Palace Events Ltd',
         contactEmail: 'carboot@crystalpalace.co.uk',
         isVerified: true,
+        website: 'https://www.better.org.uk/leisure-centre/london/crystal-palace/crystal-palace-national-sports-centre',
       ),
       CarBootSale(
         id: '6',
@@ -120,6 +140,9 @@ class CarBootRepository {
         organiser: 'Greenwich Market',
         contactEmail: 'info@greenwichmarket.london',
         isVerified: true,
+        imageUrl: 'https://images.unsplash.com/photo-1541696432-124048053432?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        website: 'https://www.greenwichmarket.london/',
+        phoneNumber: '020 8269 5096',
       ),
       CarBootSale(
         id: '7',
@@ -158,6 +181,11 @@ class CarBootRepository {
         organiser: 'Tooting Common Events',
         contactEmail: 'events@tootingcommon.org',
         isVerified: true,
+        upcomingDates: [
+          DateTime.now().add(const Duration(days: 8)),
+          DateTime.now().add(const Duration(days: 15)),
+          DateTime.now().add(const Duration(days: 22)),
+        ],
       ),
     ];
   }
