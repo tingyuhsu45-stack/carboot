@@ -1,3 +1,4 @@
+import 'package:carboot_finder/screens/account_screen.dart';
 import 'package:flutter/material.dart';
 import 'home_screen.dart'; // your existing ListView screen
 import 'map_screen.dart';
@@ -15,6 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = const [
     HomeScreen(), // existing ListView screen
     MapScreen(),  // your map view
+    AccountScreen(), // new account screen
   ];
 
 
@@ -40,6 +42,12 @@ class _MainScreenState extends State<MainScreen> {
             activeIcon: Icon(Icons.map),
             label: 'Map',
             tooltip: 'View car boot sales on map',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle_outlined),
+            activeIcon: Icon(Icons.account_circle),
+            label: 'Account',
+            tooltip: 'View and manage your account',
           ),
         ],
       ),

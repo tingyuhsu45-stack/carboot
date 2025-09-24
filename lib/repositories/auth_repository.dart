@@ -30,10 +30,14 @@ class AuthRepository {
     required String email,
     required String password,
   }) async {
-    return await _account.createEmailPasswordSession(
-      email: email,
-      password: password,
-    );
+    try {
+      return await _account.getSession(sessionId: 'current');
+    } on AppwriteException {
+      return await _account.createEmailPasswordSession(
+        email: email,
+        password: password,
+      );
+    }
   }
 
   Future<void> logout() async {
