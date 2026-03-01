@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Droplets, Plus, UtensilsCrossed, BookOpen } from 'lucide-react';
+import { Droplets, Plus, UtensilsCrossed, BookOpen, Camera } from 'lucide-react';
+import FoodPhotoCapture from './FoodPhotoCapture';
 
 interface FoodEntry {
     id: string;
@@ -29,6 +30,19 @@ export default function FoodWaterTracker() {
     const [newFoodDesc, setNewFoodDesc] = useState('');
     const [newFoodCal, setNewFoodCal] = useState('');
     const [showCraftingBook, setShowCraftingBook] = useState(false);
+    const [showPhotoCapture, setShowPhotoCapture] = useState(false);
+
+    const handlePhotoAnalysis = useCallback((analysis: { foods: { name: string; calories: number; portion: string }[]; totalCalories: number; description: string }) => {
+        const newEntries: FoodEntry[] = analysis.foods.map((food, i) => ({
+            id: `ai-${Date.now()}-${i}`,
+            description: `${food.name} (${food.portion})`,
+            calories: food.calories,
+            isOffPlan: false,
+            isFavorite: false,
+        }));
+        setFoodEntries(prev => [...prev, ...newEntries]);
+        setShowPhotoCapture(false);
+    }, []);
 
     const dailyCalories = foodEntries.reduce((sum, e) => sum + e.calories, 0);
     const calorieTarget = 2000;
@@ -81,8 +95,8 @@ export default function FoodWaterTracker() {
                             animate={{ scale: 1 }}
                             transition={{ delay: i * 0.03 }}
                             className={`w-8 h-10 rounded-lg flex items-center justify-center text-lg transition-all ${i < water.glasses
-                                    ? 'bg-vita-blue/20 border border-vita-blue/40'
-                                    : 'bg-gray-50 border border-gray-200'
+                                ? 'bg-vita-blue/20 border border-vita-blue/40'
+                                : 'bg-gray-50 border border-gray-200'
                                 }`}
                         >
                             {i < water.glasses ? '💧' : ''}
@@ -192,15 +206,31 @@ export default function FoodWaterTracker() {
                     </motion.div>
                 ))}
 
+                {/* AI Photo Scanner */}
+                <FoodPhotoCapture
+                    isOpen={showPhotoCapture}
+                    onClose={() => setShowPhotoCapture(false)}
+                    onAnalysisComplete={handlePhotoAnalysis}
+                />
+
                 {/* Quick Add Food */}
                 {!showAddFood ? (
-                    <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setShowAddFood(true)}
-                        className="w-full py-3 rounded-2xl bg-vita-orange/15 border-2 border-dashed border-vita-orange/30 text-vita-orange font-bold text-sm"
-                    >
-                        <Plus size={16} className="inline mr-1" />Log Food
-                    </motion.button>
+                    <div className="flex gap-2">
+                        <motion.button
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setShowPhotoCapture(true)}
+                            className="flex-1 py-3 rounded-2xl bg-vita-orange text-white font-bold text-sm shadow-md flex items-center justify-center gap-2"
+                        >
+                            <Camera size={16} />📸 Scan Food
+                        </motion.button>
+                        <motion.button
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setShowAddFood(true)}
+                            className="flex-1 py-3 rounded-2xl bg-vita-orange/15 border-2 border-dashed border-vita-orange/30 text-vita-orange font-bold text-sm"
+                        >
+                            <Plus size={16} className="inline mr-1" />Manual
+                        </motion.button>
+                    </div>
                 ) : (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
