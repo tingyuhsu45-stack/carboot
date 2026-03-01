@@ -4,13 +4,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Home, User, Plus, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import UniversalTimerOverlay from "./UniversalTimerOverlay";
 import LevelUpCelebration from "./LevelUpCelebration";
 import AchievementOverlay from "./AchievementOverlay";
 import { getLevelFromXP } from '@/lib/xp';
 import { supabase } from '@/lib/supabase';
-import { Achievement, calculateNewAchievements, ACHIEVEMENTS } from '@/lib/achievements';
+import { ActivityType } from './TimelineNode';
+import { Achievement, calculateNewAchievements } from '@/lib/achievements';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -57,7 +58,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
-    const checkAchievements = useCallback(async (latestActivity: any) => {
+    const checkAchievements = useCallback(async (latestActivity: { activity_type: ActivityType; created_at: string; duration_seconds?: number }) => {
         // Fetch all of today's activities for multi-type checking
         const today = new Date().toISOString().split('T')[0];
         const { data: todayActivities } = await supabase
@@ -85,7 +86,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         }
     }, [unlockedAchievementIds]);
 
-    const handleXPGained = useCallback(async (xp: number, activity?: any) => {
+    const handleXPGained = useCallback(async (xp: number, activity?: { activity_type: ActivityType; created_at: string; duration_seconds?: number }) => {
         const oldXP = totalXP;
         const newXP = totalXP + xp;
         setTotalXP(newXP);
@@ -183,7 +184,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <div className="flex-1 px-6 overflow-y-auto">
                     {/* Inject handleXPGained into children if they are TimelineContainer */}
                     {React.Children.map(children, child => {
-                        if (React.isValidElement(child) && (child.type as any).name === 'Home') {
+                        if (React.isValidElement(child) && (child.type as { name?: string }).name === 'Home') {
                             // This is a bit hacky but for this MVP it works
                             // Ideally use a Context Provider for XP state
                             return child;

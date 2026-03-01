@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Play, Square, Dumbbell, Zap, Moon } from 'lucide-react';
+import { X, Square, Dumbbell, Zap, Moon } from 'lucide-react';
 import { ActivityType } from './TimelineNode';
 import { supabase } from '@/lib/supabase';
 import { calculateXP } from '@/lib/xp';
@@ -10,10 +10,10 @@ import { calculateXP } from '@/lib/xp';
 interface UniversalTimerOverlayProps {
     isOpen: boolean;
     onClose: () => void;
-    onComplete: (activity: any) => void;
+    onComplete: (activity: { activity_type: ActivityType; description: string; duration_seconds: number; xp_awarded: number; created_at: string; }) => void;
 }
 
-const MODES: { type: ActivityType; label: string; icon: any; color: string }[] = [
+const MODES: { type: ActivityType; label: string; icon: React.ElementType; color: string }[] = [
     { type: 'exercise', label: 'Exercise', icon: Dumbbell, color: 'bg-vita-green' },
     { type: 'work', label: 'Focus Work', icon: Zap, color: 'bg-vita-orange' },
     { type: 'sleep', label: 'Sleep', icon: Moon, color: 'bg-vita-rest' },
@@ -25,7 +25,7 @@ export default function UniversalTimerOverlay({ isOpen, onClose, onComplete }: U
     const [elapsedTime, setElapsedTime] = useState(0);
 
     useEffect(() => {
-        let interval: any;
+        let interval: ReturnType<typeof setInterval>;
         if (isRunning) {
             interval = setInterval(() => {
                 setElapsedTime((prev) => prev + 1);
@@ -48,8 +48,9 @@ export default function UniversalTimerOverlay({ isOpen, onClose, onComplete }: U
     };
 
     const handleStop = async () => {
+        if (!selectedMode) return;
         setIsRunning(false);
-        const xp = calculateXP(selectedMode!, elapsedTime);
+        const xp = calculateXP(selectedMode, elapsedTime);
 
         const newActivity = {
             activity_type: selectedMode,

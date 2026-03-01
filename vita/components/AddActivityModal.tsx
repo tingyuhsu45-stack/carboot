@@ -10,10 +10,10 @@ import { calculateXP } from '@/lib/xp';
 interface AddActivityModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onComplete: (activity: any) => void;
+    onComplete: (activity: { activity_type: ActivityType; description: string; xp_awarded: number; created_at: string; }) => void;
 }
 
-const ACTIVITY_OPTIONS: { type: ActivityType; label: string; icon: any; color: string; bgLight: string }[] = [
+const ACTIVITY_OPTIONS: { type: ActivityType; label: string; icon: React.ElementType; color: string; bgLight: string }[] = [
     { type: 'exercise', label: 'Exercise', icon: Dumbbell, color: 'bg-vita-green', bgLight: 'bg-vita-green/20 text-emerald-700 border-vita-green/40' },
     { type: 'work', label: 'Work', icon: Zap, color: 'bg-vita-orange', bgLight: 'bg-vita-orange/20 text-amber-700 border-vita-orange/40' },
     { type: 'sleep', label: 'Sleep', icon: Moon, color: 'bg-vita-rest', bgLight: 'bg-vita-rest/20 text-indigo-700 border-vita-rest/40' },
@@ -141,7 +141,7 @@ export default function AddActivityModal({ isOpen, onClose, onComplete }: AddAct
                                 animate={{ opacity: 1, y: 0 }}
                                 className="bg-vita-cream/60 rounded-2xl p-4 flex items-center justify-between"
                             >
-                                <span className="text-sm font-medium text-gray-500">XP you'll earn</span>
+                                <span className="text-sm font-medium text-gray-500">XP you&apos;ll earn</span>
                                 <span className="text-lg font-black text-vita-orange">+{calculateXP(selectedType!)} XP ✨</span>
                             </motion.div>
                         )}

@@ -72,7 +72,7 @@ export default function BloomReport({ stats }: BloomReportProps) {
             </div>
 
             <p className="mt-6 text-[11px] text-vita-text-muted italic leading-tight">
-                "Balance is the key to growth. Keep blooming."
+                &quot;Balance is the key to growth. Keep blooming.&quot;
             </p>
         </div>
     );

@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+
 import BloomReport from '@/components/BloomReport';
 import { supabase } from '@/lib/supabase';
-import { ACHIEVEMENTS, Achievement } from '@/lib/achievements';
+import { ACHIEVEMENTS } from '@/lib/achievements';
 import { Trophy, Star, ShieldCheck } from 'lucide-react';
 
 export default function ProfilePage() {
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<{ username?: string; total_xp?: number; streak_shields?: number } | null>(null);
     const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
     const [stats, setStats] = useState({ exercise: 0, work: 0, sleep: 0 });
 

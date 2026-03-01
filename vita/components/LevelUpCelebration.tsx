@@ -21,11 +21,13 @@ const PARTICLE_COLORS = [
 
 function ConfettiParticle({ index }: { index: number }) {
     const angle = (index / 12) * 360;
-    const distance = 120 + Math.random() * 80;
+    const randomDist = (index * 0.37) % 1;
+    const distance = 120 + randomDist * 80;
     const radians = (angle * Math.PI) / 180;
     const x = Math.cos(radians) * distance;
     const y = Math.sin(radians) * distance;
-    const size = 8 + Math.random() * 12;
+    const randomSize = (index * 0.71) % 1;
+    const size = 8 + randomSize * 12;
     const color = PARTICLE_COLORS[index % PARTICLE_COLORS.length];
 
     return (
