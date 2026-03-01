@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Home, User, Plus, ShieldCheck, Sword, HeartPulse } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import UniversalTimerOverlay from "./UniversalTimerOverlay";
 import LevelUpCelebration from "./LevelUpCelebration";
@@ -12,10 +12,22 @@ import { getLevelFromXP } from '@/lib/xp';
 import { supabase } from '@/lib/supabase';
 import { ActivityType } from './TimelineNode';
 import { Achievement, calculateNewAchievements } from '@/lib/achievements';
+import { useGoals } from './GoalsContext';
+import { hasCompletedOnboarding } from '@/lib/goals';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const { goals, isLoaded } = useGoals();
     const [isTimerOpen, setIsTimerOpen] = useState(false);
+    const isOnboarding = pathname === '/onboarding';
+
+    // Gate: redirect to onboarding if goals not set
+    useEffect(() => {
+        if (isLoaded && !isOnboarding && !hasCompletedOnboarding()) {
+            router.replace('/onboarding');
+        }
+    }, [isLoaded, isOnboarding, router]);
 
     // Gamification State
     const [totalXP, setTotalXP] = useState(0);
@@ -114,6 +126,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         }
     };
 
+    // On the onboarding page, render children without the shell
+    if (isOnboarding) {
+        return <>{children}</>;
+    }
+
     return (
         <div className="min-h-screen flex flex-col items-center">
             <UniversalTimerOverlay
@@ -152,7 +169,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                             transition={{ duration: 0.6, ease: 'easeOut' }}
                             className="text-3xl font-black text-gradient-vita"
                         >
-                            Vita
+                            {goals.username ? `Hi, ${goals.username}` : 'Vita'}
                         </motion.h1>
                         <motion.div
                             initial={{ width: 0 }}

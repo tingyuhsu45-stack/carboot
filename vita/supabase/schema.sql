@@ -21,6 +21,7 @@ create table public.activities (
   description text,
   xp_awarded integer default 0,
   xp_category text default 'health', -- 'health','wisdom','spirit','stamina'
+  is_routine boolean default false, -- starred as a routine for Home screen
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
