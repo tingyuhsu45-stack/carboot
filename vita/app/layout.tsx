@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 import AppLayout from "@/components/AppLayout";
+import { GoalsProvider } from "@/components/GoalsContext";
 
 export default function RootLayout({
   children,
@@ -29,9 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppLayout>
-          {children}
-        </AppLayout>
+        <GoalsProvider>
+          <AppLayout>
+            {children}
+          </AppLayout>
+        </GoalsProvider>
       </body>
     </html>
   );

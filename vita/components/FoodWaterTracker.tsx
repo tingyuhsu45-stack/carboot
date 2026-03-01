@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Droplets, Plus, UtensilsCrossed, BookOpen, Camera } from 'lucide-react';
 import FoodPhotoCapture from './FoodPhotoCapture';
+import { useGoals } from './GoalsContext';
 
 interface FoodEntry {
     id: string;
@@ -24,8 +25,9 @@ const MOCK_FOOD: FoodEntry[] = [
 ];
 
 export default function FoodWaterTracker() {
+    const { goals } = useGoals();
     const [foodEntries, setFoodEntries] = useState<FoodEntry[]>(MOCK_FOOD);
-    const [water, setWater] = useState<WaterState>({ glasses: 4, target: 8 });
+    const [water, setWater] = useState<WaterState>({ glasses: 4, target: goals.waterGlasses });
     const [showAddFood, setShowAddFood] = useState(false);
     const [newFoodDesc, setNewFoodDesc] = useState('');
     const [newFoodCal, setNewFoodCal] = useState('');
@@ -45,7 +47,7 @@ export default function FoodWaterTracker() {
     }, []);
 
     const dailyCalories = foodEntries.reduce((sum, e) => sum + e.calories, 0);
-    const calorieTarget = 2000;
+    const calorieTarget = goals.calorieTarget;
     const calorieProgress = Math.min(1, dailyCalories / calorieTarget);
     const waterProgress = water.glasses / water.target;
 

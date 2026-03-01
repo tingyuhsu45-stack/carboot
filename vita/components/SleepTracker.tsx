@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Moon, Plus, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useGoals } from './GoalsContext';
 
 interface SleepEntry {
     date: string;
@@ -24,6 +25,8 @@ const qualityEmojis = ['', '😫', '😔', '😐', '😊', '😴'];
 const qualityLabels = ['', 'Poor', 'Light', 'Fair', 'Good', 'Deep'];
 
 export default function SleepTracker() {
+    const { goals } = useGoals();
+    const sleepGoal = goals.sleepHours;
     const [entries, setEntries] = useState<SleepEntry[]>(MOCK_SLEEP);
     const [showInput, setShowInput] = useState(false);
     const [newHours, setNewHours] = useState('7');
@@ -39,9 +42,10 @@ export default function SleepTracker() {
 
     const maxHours = Math.max(...entries.map(e => e.hours), 10);
 
-    // Buff/Debuff display
-    const hasExhaustion = avg7Day < 6;
+    // Buff/Debuff display — based on user's goal
+    const hasExhaustion = avg7Day < (sleepGoal - 2);
     const hasClarity = avgQuality >= 4;
+    const isOnTrack = avg7Day >= sleepGoal;
 
     const handleAddSleep = () => {
         const entry: SleepEntry = {
@@ -59,7 +63,7 @@ export default function SleepTracker() {
             <div className="vita-card p-5 bg-gradient-to-br from-vita-rest/10 to-white">
                 <div className="flex justify-between items-start mb-4">
                     <div>
-                        <p className="text-xs font-bold text-vita-text-muted uppercase tracking-wider">7-Day Average</p>
+                        <p className="text-xs font-bold text-vita-text-muted uppercase tracking-wider">7-Day Avg / Goal: {sleepGoal}h</p>
                         <p className="text-3xl font-black text-vita-text mt-1">{avg7Day.toFixed(1)}h</p>
                     </div>
                     <div className="text-right">
@@ -108,7 +112,7 @@ export default function SleepTracker() {
                                     animate={{ height: `${height}%` }}
                                     transition={{ delay: i * 0.05, duration: 0.5 }}
                                     className={`w-full rounded-t-lg ${entry.quality >= 4 ? 'bg-vita-rest' :
-                                            entry.quality >= 3 ? 'bg-vita-rest/60' : 'bg-red-300'
+                                        entry.quality >= 3 ? 'bg-vita-rest/60' : 'bg-red-300'
                                         }`}
                                 />
                                 <span className="text-[10px] font-bold text-vita-text-muted">{dayLabel}</span>
@@ -120,9 +124,9 @@ export default function SleepTracker() {
 
             {/* Trend Indicator */}
             <div className="flex items-center gap-3 px-2">
-                {avg7Day >= 7.5 ? (
+                {avg7Day >= sleepGoal ? (
                     <><TrendingUp size={16} className="text-vita-green" /><span className="text-xs font-bold text-vita-green-dark">Great sleep trend!</span></>
-                ) : avg7Day < 6 ? (
+                ) : avg7Day < (sleepGoal - 2) ? (
                     <><TrendingDown size={16} className="text-red-400" /><span className="text-xs font-bold text-red-500">Sleep needs attention</span></>
                 ) : (
                     <><Minus size={16} className="text-vita-text-muted" /><span className="text-xs font-bold text-vita-text-muted">Sleep is stable</span></>
