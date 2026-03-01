@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Dumbbell, Zap, Moon, Coffee, Scale, Loader2 } from 'lucide-react';
 import { ActivityType } from './TimelineNode';
 import { supabase } from '@/lib/supabase';
+import { calculateXP } from '@/lib/xp';
 
 interface AddActivityModalProps {
     isOpen: boolean;
@@ -32,7 +33,7 @@ export default function AddActivityModal({ isOpen, onClose, onComplete }: AddAct
 
         setIsSubmitting(true);
 
-        const xp = 10; // Flat 10 XP for quick-logged activities
+        const xp = calculateXP(selectedType!);
 
         const newActivity = {
             activity_type: selectedType,
@@ -100,8 +101,8 @@ export default function AddActivityModal({ isOpen, onClose, onComplete }: AddAct
                                             whileTap={{ scale: 0.95 }}
                                             onClick={() => setSelectedType(option.type)}
                                             className={`flex items-center gap-2 px-4 py-3 rounded-2xl border-2 font-semibold text-sm transition-all ${isSelected
-                                                    ? `${option.color} text-white border-transparent shadow-md`
-                                                    : `${option.bgLight} border-transparent hover:border-current`
+                                                ? `${option.color} text-white border-transparent shadow-md`
+                                                : `${option.bgLight} border-transparent hover:border-current`
                                                 }`}
                                         >
                                             <Icon size={18} />
@@ -141,7 +142,7 @@ export default function AddActivityModal({ isOpen, onClose, onComplete }: AddAct
                                 className="bg-vita-cream/60 rounded-2xl p-4 flex items-center justify-between"
                             >
                                 <span className="text-sm font-medium text-gray-500">XP you'll earn</span>
-                                <span className="text-lg font-black text-vita-orange">+10 XP ✨</span>
+                                <span className="text-lg font-black text-vita-orange">+{calculateXP(selectedType!)} XP ✨</span>
                             </motion.div>
                         )}
                     </div>
@@ -153,8 +154,8 @@ export default function AddActivityModal({ isOpen, onClose, onComplete }: AddAct
                             onClick={handleSubmit}
                             disabled={!canSubmit}
                             className={`w-full py-4 rounded-2xl text-lg font-bold shadow-lg transition-all flex items-center justify-center gap-2 ${canSubmit
-                                    ? `${selectedOption?.color || 'bg-vita-green'} text-white active:shadow-md`
-                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                ? `${selectedOption?.color || 'bg-vita-green'} text-white active:shadow-md`
+                                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                 }`}
                         >
                             {isSubmitting ? (
