@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/* ===== Vita "Cozy" Design System ===== */
+
+:root {
+  --background: #FDF8F3;
+  --foreground: #2D2A26;
+
+  /* Shadows */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-glow-green: 0 0 20px rgba(167, 243, 208, 0.5);
+  --shadow-glow-orange: 0 0 20px rgba(255, 216, 168, 0.5);
+  --shadow-nav: 0 -4px 30px rgba(0, 0, 0, 0.06);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Vita "Cozy" Palette */
+  --color-vita-green: #6EE7B7;
+  --color-vita-green-light: #A7F3D0;
+  --color-vita-green-dark: #34D399;
+  --color-vita-blue: #93C5FD;
+  --color-vita-blue-light: #BAE6FD;
+  --color-vita-orange: #FDBA74;
+  --color-vita-orange-light: #FFD8A8;
+  --color-vita-orange-dark: #F97316;
+  --color-vita-cream: #FFF9F0;
+  --color-vita-cream-deep: #FDF5E6;
+  --color-vita-rest: #A5B4FC;
+  --color-vita-rest-light: #C7D2FE;
+  --color-vita-card: #FFFFFF;
+  --color-vita-card-border: rgba(0, 0, 0, 0.04);
+  --color-vita-text: #2D2A26;
+  --color-vita-text-secondary: #8B8680;
+  --color-vita-text-muted: #B5AFA8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1A1816;
+    --foreground: #F5F0EB;
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+    --shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
+    --shadow-nav: 0 -4px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  @theme inline {
+    --color-vita-card: #242220;
+    --color-vita-card-border: rgba(255, 255, 255, 0.06);
+    --color-vita-cream: #1E1C1A;
+    --color-vita-cream-deep: #1A1816;
+    --color-vita-text: #F5F0EB;
+    --color-vita-text-secondary: #A09A94;
+    --color-vita-text-muted: #6B6560;
+  }
+}
+
+/* ===== Base Styles ===== */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Warm gradient background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at top left, rgba(167, 243, 208, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(255, 216, 168, 0.08) 0%, transparent 50%),
+    var(--background);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ===== Scrollbar ===== */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+/* ===== Glassmorphism utility ===== */
+
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass {
+    background: rgba(30, 28, 26, 0.78);
+  }
+}
+
+/* ===== Card utility ===== */
+
+.vita-card {
+  background: var(--color-vita-card);
+  border: 1px solid var(--color-vita-card-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 1rem;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.vita-card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* ===== XP Badge Pulse ===== */
+
+@keyframes xp-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+.xp-badge {
+  animation: xp-pulse 2s ease-in-out infinite;
+}
+
+/* ===== FAB Glow Ring ===== */
+
+@keyframes glow-ring {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(110, 231, 183, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 12px rgba(110, 231, 183, 0);
+  }
+}
+
+.fab-glow {
+  animation: glow-ring 2.5s ease-in-out infinite;
+}
+
+/* ===== Gradient Text ===== */
+
+.text-gradient-vita {
+  background: linear-gradient(135deg, #34D399 0%, #6EE7B7 40%, #FDBA74 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== Selection ===== */
+
+::selection {
+  background: rgba(110, 231, 183, 0.3);
+  color: inherit;
+}
