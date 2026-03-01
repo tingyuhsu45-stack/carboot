@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Home, User, Plus, ShieldCheck } from 'lucide-react';
+import { Home, User, Plus, ShieldCheck, Sword, HeartPulse } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -207,30 +207,54 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </div>
 
                 {/* Bottom Navigation — Glassmorphism */}
-                <nav className="fixed bottom-0 w-full max-w-md md:max-w-lg glass border-t border-vita-card-border px-8 py-4 flex justify-between items-center z-10"
+                <nav className="fixed bottom-0 w-full max-w-md md:max-w-lg glass border-t border-vita-card-border px-4 py-3 flex justify-around items-center z-10"
                     style={{ boxShadow: 'var(--shadow-nav)' }}>
-                    <Link href="/" className="flex flex-col items-center gap-1 group">
+                    <Link href="/" className="flex flex-col items-center gap-0.5 group">
                         <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.9 }}>
                             <Home
-                                size={24}
+                                size={22}
                                 className={pathname === '/' ? 'text-vita-green-dark' : 'text-vita-text-muted group-hover:text-vita-green transition-colors duration-300'}
                             />
                         </motion.div>
-                        <span className={`text-xs font-semibold ${pathname === '/' ? 'text-vita-green-dark' : 'text-vita-text-muted'}`}>
+                        <span className={`text-[10px] font-semibold ${pathname === '/' ? 'text-vita-green-dark' : 'text-vita-text-muted'}`}>
                             Home
                         </span>
                     </Link>
 
-                    <div className="w-16" /> {/* Spacer for FAB */}
+                    <Link href="/quests" className="flex flex-col items-center gap-0.5 group">
+                        <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.9 }}>
+                            <Sword
+                                size={22}
+                                className={pathname === '/quests' ? 'text-vita-green-dark' : 'text-vita-text-muted group-hover:text-vita-green transition-colors duration-300'}
+                            />
+                        </motion.div>
+                        <span className={`text-[10px] font-semibold ${pathname === '/quests' ? 'text-vita-green-dark' : 'text-vita-text-muted'}`}>
+                            Quests
+                        </span>
+                    </Link>
 
-                    <Link href="/profile" className="flex flex-col items-center gap-1 group">
+                    <div className="w-14" /> {/* Spacer for FAB */}
+
+                    <Link href="/tracking" className="flex flex-col items-center gap-0.5 group">
+                        <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.9 }}>
+                            <HeartPulse
+                                size={22}
+                                className={pathname === '/tracking' ? 'text-vita-green-dark' : 'text-vita-text-muted group-hover:text-vita-green transition-colors duration-300'}
+                            />
+                        </motion.div>
+                        <span className={`text-[10px] font-semibold ${pathname === '/tracking' ? 'text-vita-green-dark' : 'text-vita-text-muted'}`}>
+                            Vitals
+                        </span>
+                    </Link>
+
+                    <Link href="/profile" className="flex flex-col items-center gap-0.5 group">
                         <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.9 }}>
                             <User
-                                size={24}
+                                size={22}
                                 className={pathname === '/profile' ? 'text-vita-green-dark' : 'text-vita-text-muted group-hover:text-vita-green transition-colors duration-300'}
                             />
                         </motion.div>
-                        <span className={`text-xs font-semibold ${pathname === '/profile' ? 'text-vita-green-dark' : 'text-vita-text-muted'}`}>
+                        <span className={`text-[10px] font-semibold ${pathname === '/profile' ? 'text-vita-green-dark' : 'text-vita-text-muted'}`}>
                             Profile
                         </span>
                     </Link>

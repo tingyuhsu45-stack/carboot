@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react';
 
 import BloomReport from '@/components/BloomReport';
+import WeeklySummary from '@/components/WeeklySummary';
 import { supabase } from '@/lib/supabase';
 import { ACHIEVEMENTS } from '@/lib/achievements';
-import { Trophy, Star, ShieldCheck } from 'lucide-react';
+import { Trophy, Star, ShieldCheck, ShoppingBag } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ProfilePage() {
     const [profile, setProfile] = useState<{ username?: string; total_xp?: number; streak_shields?: number } | null>(null);
@@ -73,6 +75,25 @@ export default function ProfilePage() {
             </header>
 
             <BloomReport stats={stats} />
+
+            <WeeklySummary
+                stats={{ health: 0.85, wisdom: 0.72, spirit: 0.91, stamina: 0.78 }}
+                badgeEarned={false}
+            />
+
+            <Link
+                href="/shop"
+                className="vita-card p-4 flex items-center gap-3 bg-gradient-to-r from-vita-cream to-vita-orange/10 border border-vita-orange/20"
+            >
+                <div className="w-10 h-10 bg-vita-orange/20 rounded-xl flex items-center justify-center">
+                    <ShoppingBag size={20} className="text-vita-orange-dark" />
+                </div>
+                <div className="flex-1">
+                    <p className="text-sm font-bold text-vita-text">XP Shop</p>
+                    <p className="text-xs text-vita-text-muted">Spend your XP on rewards</p>
+                </div>
+                <span className="text-vita-text-muted text-sm">→</span>
+            </Link>
 
             <section>
                 <div className="flex items-center gap-2 mb-4">
